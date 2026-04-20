@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rahmat Syawaludin — Learning Designer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #0f0f0f;
+      --paper: #f5f0e8;
+      --cream: #ede8d8;
+      --accent: #c8460a;
+      --accent2: #1a4f3a;
+      --gold: #b8922a;
+      --muted: #6b6459;
+      --light: #faf7f2;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(245, 240, 232, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(15,15,15,0.08);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8rem 5rem 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      left: -20%;
+      width: 140%;
+      height: 140%;
+      background: radial-gradient(ellipse at 30% 40%, rgba(200,70,10,0.18) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 80%, rgba(26,79,58,0.15) 0%, transparent 55%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 5vw, 5.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--paper);
+      letter-spacing: -0.03em;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-title {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: rgba(245,240,232,0.6);
+      line-height: 1.7;
+      max-width: 320px;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 3rem;
+      display: flex;
+      gap: 1rem;
+      position: relative;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: white;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { background: #a83808; transform: translateY(-2px); }
+
+    .btn-ghost {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      border: 1px solid rgba(245,240,232,0.3);
+      color: rgba(245,240,232,0.7);
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--paper); color: var(--paper); }
+
+    .hero-right {
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 5rem 5rem;
+      gap: 2rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1.5px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .badge.accent { background: var(--accent); border-color: var(--accent); color: white; }
+    .badge.green { background: var(--accent2); border-color: var(--accent2); color: white; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.2s forwards;
+    }
+
+    .stat-card {
+      padding: 1.5rem;
+      background: var(--paper);
+      border-left: 3px solid var(--accent);
+    }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .stat-label {
+      margin-top: 0.4rem;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .hero-quote {
+      padding: 1.5rem 2rem;
+      border-left: 3px solid var(--gold);
+      background: rgba(184,146,42,0.07);
+      opacity: 0;
+      animation: fadeUp 0.8s 1.4s forwards;
+    }
+
+    .hero-quote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    /* ── SECTION BASE ── */
+    section { position: relative; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 8rem 4rem;
+      background: var(--light);
+    }
+
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .about-left { position: sticky; top: 8rem; }
+
+    .about-body {
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: #2a2520;
+    }
+
+    .about-body p + p { margin-top: 1.2rem; }
+
+    .about-body strong { color: var(--accent); font-weight: 600; }
+
+    .highlight-bar {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .hbar {
+      padding: 1.2rem 1.5rem;
+      background: var(--cream);
+      border-top: 2px solid var(--ink);
+    }
+
+    .hbar-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .hbar-key {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.2rem;
+    }
+
+    /* ── EXPERTISE ── */
+    #expertise {
+      padding: 8rem 4rem;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .expertise-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .expertise-inner .section-title { color: var(--paper); }
+
+    .expertise-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(245,240,232,0.1);
+    }
+
+    .exp-card {
+      padding: 2.5rem 2rem;
+      background: var(--ink);
+      border: 1px solid rgba(245,240,232,0.08);
+      transition: background 0.3s;
+    }
+
+    .exp-card:hover { background: rgba(245,240,232,0.04); }
+
+    .exp-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .exp-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--paper);
+      margin-bottom: 0.8rem;
+    }
+
+    .exp-desc {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: rgba(245,240,232,0.55);
+    }
+
+    .exp-tags {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .exp-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(200,70,10,0.2);
+      color: rgba(245,240,232,0.7);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio {
+      padding: 8rem 4rem;
+      background: var(--paper);
+    }
+
+    .portfolio-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .portfolio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 5rem;
+    }
+
+    .portfolio-header p {
+      max-width: 320px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .project-list { display: flex; flex-direction: column; gap: 3px; }
+
+    .project-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      gap: 2rem;
+      align-items: start;
+      padding: 2.5rem 2rem;
+      background: var(--cream);
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.25s, background 0.25s;
+      cursor: default;
+    }
+
+    .project-item:hover {
+      border-color: var(--accent);
+      background: var(--light);
+    }
+
+    .project-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: rgba(15,15,15,0.12);
+      line-height: 1;
+      padding-top: 0.2rem;
+    }
+
+    .project-meta { flex: 1; }
+
+    .project-org {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .project-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 580px;
+    }
+
+    .project-pills {
+      margin-top: 1.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .pill {
+      font-size: 0.68rem;
+      font-weight: 500;
+      padding: 0.25rem 0.7rem;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1px solid rgba(15,15,15,0.15);
+      letter-spacing: 0.03em;
+    }
+
+    .project-badge {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .outcome-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      padding: 0.35rem 0.8rem;
+      letter-spacing: 0.08em;
+    }
+
+    .outcome-tag.hd { background: var(--accent2); color: white; }
+    .outcome-tag.patent { background: var(--gold); color: white; }
+    .outcome-tag.impact { background: var(--accent); color: white; }
+    .outcome-tag.gov { background: var(--ink); color: var(--paper); }
+
+    /* ── EDUCATION ── */
+    #education {
+      padding: 8rem 4rem;
+      background: var(--cream);
+    }
+
+    .edu-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 4rem;
+    }
+
+    .edu-card {
+      padding: 2.5rem;
+      background: var(--paper);
+      border-top: 3px solid var(--ink);
+      position: relative;
+    }
+
+    .edu-card.featured { border-top-color: var(--accent); }
+
+    .edu-flag {
+      position: absolute;
+      top: 2.5rem;
+      right: 2.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.3rem 0.7rem;
+      background: var(--accent);
+      color: white;
+      letter-spacing: 0.1em;
+    }
+
+    .edu-degree {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .edu-school {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    .edu-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .edu-highlights {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .edu-highlights li {
+      font-size: 0.84rem;
+      color: #3a342e;
+      display: flex;
+      gap: 0.6rem;
+      line-height: 1.5;
+    }
+
+    .edu-highlights li::before {
+      content: '—';
+      color: var(--accent);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    .transcript-grid {
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .transcript-item {
+      padding: 0.7rem 0.9rem;
+      background: var(--cream);
+      font-size: 0.75rem;
+    }
+
+    .transcript-item .grade {
+      font-family: 'DM Mono', monospace;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .transcript-item .subject {
+      color: var(--muted);
+      margin-top: 0.2rem;
+      line-height: 1.3;
+    }
+
+    /* ── SKILLS ── */
+    #skills {
+      padding: 8rem 4rem;
+      background: var(--light);
+    }
+
+    .skills-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .skills-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .skill-group h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(15,15,15,0.12);
+    }
+
+    .skill-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .skill-list li {
+      font-size: 0.85rem;
+      color: #2a2520;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skill-list li::before {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── PUBLICATIONS ── */
+    #publications {
+      padding: 8rem 4rem;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .pub-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .pub-inner .section-title { color: var(--paper); }
+    .pub-inner .section-label { color: var(--gold); }
+
+    .pub-grid {
+      margin-top: 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .pub-card {
+      padding: 2rem;
+      border: 1px solid rgba(245,240,232,0.1);
+      transition: border-color 0.2s;
+    }
+
+    .pub-card:hover { border-color: var(--gold); }
+
+    .pub-type {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .pub-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--paper);
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      padding: 8rem 4rem;
+      background: var(--paper);
+    }
+
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .contact-body {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--muted);
+      margin-top: 1.5rem;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 3rem;
+    }
+
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--cream);
+      text-decoration: none;
+      color: var(--ink);
+      transition: background 0.2s, transform 0.2s;
+      border-left: 3px solid transparent;
+    }
+
+    .contact-link:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-left-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .contact-link-icon {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .contact-link-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .contact-link:hover .contact-link-label { color: rgba(245,240,232,0.5); }
+
+    .contact-link-val {
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .contact-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .open-card {
+      padding: 2.5rem;
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .open-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .open-card p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: rgba(245,240,232,0.6);
+      margin-bottom: 2rem;
+    }
+
+    .open-roles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .open-role {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.4rem 0.9rem;
+      border: 1px solid rgba(245,240,232,0.2);
+      color: var(--paper);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 4rem;
+      background: var(--ink);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(245,240,232,0.08);
+    }
+
+    footer p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(245,240,232,0.35);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 2rem; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 7rem 2rem 3rem; min-height: 70vh; }
+      .hero-right { padding: 3rem 2rem; }
+      .about-inner, .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .about-left { position: static; }
+      .expertise-grid, .skills-grid { grid-template-columns: 1fr 1fr; }
+      .pub-grid { grid-template-columns: 1fr; }
+      .edu-inner { grid-template-columns: 1fr; }
+      section { padding: 5rem 2rem !important; }
+      .portfolio-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .project-item { grid-template-columns: 50px 1fr; }
+      .project-badge { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .expertise-grid, .skills-grid { grid-template-columns: 1fr; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .highlight-bar { grid-template-columns: 1fr; }
+      .transcript-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#hero" class="nav-logo">RS.</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <span class="hero-eyebrow">Learning Designer · Jakarta, Indonesia</span>
+      <h1 class="hero-name">Rahmat<br><em>Syawaludin</em></h1>
+      <p class="hero-title">
+        Designing learning experiences that reach people where they are — from rural islands in Maluku to digital-first workplaces.
+      </p>
+      <div class="hero-cta">
+        <a href="#portfolio" class="btn-primary">View Work</a>
+        <a href="#contact" class="btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="badge-row">
+        <span class="badge accent">MEd Digital Learning</span>
+        <span class="badge green">LPDP Scholar</span>
+        <span class="badge">Monash University</span>
+        <span class="badge">AR Patent Holder</span>
+        <span class="badge">WAM 76.69</span>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">300+</div>
+          <div class="stat-label">Students Reached</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4×</div>
+          <div class="stat-label">High Distinctions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3+</div>
+          <div class="stat-label">Years L&D Experience</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">3</div>
+          <div class="stat-label">Peer-Reviewed Pubs</div>
+        </div>
+      </div>
+      <div class="hero-quote">
+        <p>"Learning design is not about content delivery — it is about engineering the conditions in which people grow."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="about-left reveal">
+        <div class="section-label">Profile</div>
+        <h2 class="section-title">Designing for<br><em style="font-style:italic">real</em><br>learners.</h2>
+        <div class="highlight-bar">
+          <div class="hbar">
+            <div class="hbar-val">ADDIE · SAM</div>
+            <div class="hbar-key">Core Frameworks</div>
+          </div>
+          <div class="hbar">
+            <div class="hbar-val">Offline-First</div>
+            <div class="hbar-key">Design Philosophy</div>
+          </div>
+          <div class="hbar">
+            <div class="hbar-val">D.school + ◇◇</div>
+            <div class="hbar-key">Design Thinking</div>
+          </div>
+          <div class="hbar">
+            <div class="hbar-val">🇮🇩 → 🌏</div>
+            <div class="hbar-key">Indonesia & Beyond</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-body reveal">
+        <p>
+          I am an <strong>Instructional Designer and Learning Experience Designer</strong> with a Master of Education (Digital Learning) from Monash University — completed with a WAM of 76.69 and four High Distinctions. My work sits at the intersection of curriculum architecture, human-centred design, and educational technology.
+        </p>
+        <p>
+          My experience spans the full design cycle: from on-site needs analysis in remote island schools with no electricity to designing AR-based learning modules that are now <strong>still in active use post-project</strong>. I've built learning tools from scratch, facilitated teacher training, led curriculum delivery across multiple schools, and co-designed with communities using Stanford D.school and Double Diamond methodologies.
+        </p>
+        <p>
+          I hold an <strong>LPDP Full Scholarship</strong> — Indonesia's most competitive national academic award — awarded to students who demonstrate exceptional promise and commitment to contributing back to the nation. I also won 1st place in the National 21st Century Learning Innovation Competition (2021) and hold a registered patent in Augmented Reality education.
+        </p>
+        <p>
+          I believe the best learning design is <strong>equitable by default</strong>: designed to work for learners with the fewest resources first, then scaled upward. Every solution I build is grounded in that principle.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERTISE -->
+  <section id="expertise">
+    <div class="expertise-inner">
+      <div class="reveal">
+        <div class="section-label">What I Do</div>
+        <h2 class="section-title" style="color:var(--paper)">Core<br>Expertise</h2>
+      </div>
+      <div class="expertise-grid reveal">
+        <div class="exp-card">
+          <div class="exp-icon">📐</div>
+          <div class="exp-title">Instructional Design</div>
+          <div class="exp-desc">End-to-end curriculum architecture using ADDIE and SAM frameworks. From needs analysis to evaluation — with a focus on measurable learning outcomes.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">ADDIE</span>
+            <span class="exp-tag">SAM</span>
+            <span class="exp-tag">Backward Design</span>
+            <span class="exp-tag">Storyboarding</span>
+          </div>
+        </div>
+        <div class="exp-card">
+          <div class="exp-icon">🎨</div>
+          <div class="exp-title">Learning Experience Design</div>
+          <div class="exp-desc">Human-centred design of learning journeys — integrating gamification, offline-first principles, and culturally grounded content.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">D.school</span>
+            <span class="exp-tag">Double Diamond</span>
+            <span class="exp-tag">Co-design</span>
+            <span class="exp-tag">Gamification</span>
+          </div>
+        </div>
+        <div class="exp-card">
+          <div class="exp-icon">🥽</div>
+          <div class="exp-title">AR & EdTech Development</div>
+          <div class="exp-desc">Patented AR learning media. Offline AR modules deployed in zero-internet environments — marker-based, device-agnostic, and low-spec compatible.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">AR Development</span>
+            <span class="exp-tag">Offline-First</span>
+            <span class="exp-tag">Low-Tech Design</span>
+          </div>
+        </div>
+        <div class="exp-card">
+          <div class="exp-icon">📊</div>
+          <div class="exp-title">LMS Administration</div>
+          <div class="exp-desc">Administration and design on Canvas LMS and Google Classroom. Building structured, accessible digital learning environments.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">Canvas LMS</span>
+            <span class="exp-tag">Google Classroom</span>
+            <span class="exp-tag">LMS Design</span>
+          </div>
+        </div>
+        <div class="exp-card">
+          <div class="exp-icon">🌱</div>
+          <div class="exp-title">Facilitator & Trainer</div>
+          <div class="exp-desc">Teacher training, student facilitation, and stakeholder workshops. Experienced in multi-age, mixed-ability, and culturally diverse classrooms.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">Teacher Training</span>
+            <span class="exp-tag">Facilitation</span>
+            <span class="exp-tag">Differentiated Instruction</span>
+          </div>
+        </div>
+        <div class="exp-card">
+          <div class="exp-icon">🔬</div>
+          <div class="exp-title">Educational Research</div>
+          <div class="exp-desc">3 peer-reviewed publications. Research-informed design practice — using data and evidence to validate, iterate, and improve learning solutions.</div>
+          <div class="exp-tags">
+            <span class="exp-tag">Research Design</span>
+            <span class="exp-tag">Peer Review</span>
+            <span class="exp-tag">Digital Data in Education</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section id="portfolio">
+    <div class="portfolio-inner">
+      <div class="portfolio-header reveal">
+        <div>
+          <div class="section-label">Selected Work</div>
+          <h2 class="section-title">Portfolio</h2>
+        </div>
+        <p>Five projects across instructional design, AR development, curriculum design, and community-based learning.</p>
+      </div>
+
+      <div class="project-list">
+
+        <div class="project-item reveal">
+          <div class="project-num">01</div>
+          <div class="project-meta">
+            <div class="project-org">Desamind × Pertamina & PLN · 2022–2023</div>
+            <div class="project-title">Babar Kalesang — Rural AR Learning Modules</div>
+            <div class="project-desc">Led end-to-end instructional design across two field visits to Pulau-Pulau Babar, Maluku Barat Daya — one of Indonesia's most remote island regions. Designed fully offline AR modules covering science, mathematics, and general knowledge for schools with no internet or device infrastructure, reaching 300–500 students. Modules remain in active use post-project.</div>
+            <div class="project-pills">
+              <span class="pill">ADDIE</span>
+              <span class="pill">AR Development</span>
+              <span class="pill">Offline-First</span>
+              <span class="pill">Teacher Training</span>
+              <span class="pill">Needs Analysis</span>
+              <span class="pill">CSR Alignment</span>
+            </div>
+          </div>
+          <div class="project-badge">
+            <span class="outcome-tag impact">300–500 Students</span>
+            <span class="outcome-tag gov">Still Active</span>
+          </div>
+        </div>
+
+        <div class="project-item reveal">
+          <div class="project-num">02</div>
+          <div class="project-meta">
+            <div class="project-org">Universitas Muhammadiyah Surakarta · 2020–2022</div>
+            <div class="project-title">AR-Manner 1.0 — Patented AR Ethics Education Tool</div>
+            <div class="project-desc">Developed, tested, published, and patented AR-Manner 1.0 — a marker-based Augmented Reality application teaching communication ethics to ~50 students in higher education. Fully offline, compatible with low-spec Android devices. Research validated and published in a peer-reviewed journal.</div>
+            <div class="project-pills">
+              <span class="pill">AR Development</span>
+              <span class="pill">Research Design</span>
+              <span class="pill">Scenario-Based Learning</span>
+              <span class="pill">Peer Review</span>
+            </div>
+          </div>
+          <div class="project-badge">
+            <span class="outcome-tag patent">Registered Patent</span>
+            <span class="outcome-tag hd">Published</span>
+          </div>
+        </div>
+
+        <div class="project-item reveal">
+          <div class="project-num">03</div>
+          <div class="project-meta">
+            <div class="project-org">Monash University — Shaping Digital Futures · 2025</div>
+            <div class="project-title">Community-Based Offline Learning Companion App</div>
+            <div class="project-desc">Solo design project applying a hybrid Design Thinking model — Stanford D.school combined with Double Diamond — to address critically low literacy and numeracy outcomes in rural Indonesia. Co-designed with children, parents, teachers, NGOs, and community leaders across a 3–6 month cycle. Achieved High Distinction (83/100).</div>
+            <div class="project-pills">
+              <span class="pill">Stanford D.school</span>
+              <span class="pill">Double Diamond</span>
+              <span class="pill">Co-design</span>
+              <span class="pill">Offline-First</span>
+              <span class="pill">Gamification</span>
+              <span class="pill">Community Engagement</span>
+            </div>
+          </div>
+          <div class="project-badge">
+            <span class="outcome-tag hd">HD · 83/100</span>
+          </div>
+        </div>
+
+        <div class="project-item reveal">
+          <div class="project-num">04</div>
+          <div class="project-meta">
+            <div class="project-org">UMS × Bebras Indonesia · Feb–Jun 2022</div>
+            <div class="project-title">Computational Thinking Curriculum — Solo Raya</div>
+            <div class="project-desc">Designed and delivered a specialised Computational Thinking curriculum across 5–10 schools in the Solo Raya region through weekly school visits. Covered decomposition, pattern recognition, abstraction, and algorithm design — aligned to Bebras Indonesia's national framework. Used inquiry-based learning with unplugged activities and real-world Indonesian contexts.</div>
+            <div class="project-pills">
+              <span class="pill">Curriculum Design</span>
+              <span class="pill">Inquiry-Based Learning</span>
+              <span class="pill">Facilitation</span>
+              <span class="pill">CT Framework</span>
+            </div>
+          </div>
+          <div class="project-badge">
+            <span class="outcome-tag gov">5–10 Schools</span>
+            <span class="outcome-tag impact">National Alignment</span>
+          </div>
+        </div>
+
+        <div class="project-item reveal">
+          <div class="project-num">05</div>
+          <div class="project-meta">
+            <div class="project-org">Kemendikbudristek Indonesia · Aug–Dec 2021</div>
+            <div class="project-title">Inclusive Classroom Design — Ministry of Education</div>
+            <div class="project-desc">Served as Team Lead of Teacher Assistants and PIC for Grade 1 students at SD Negeri 1 Sambirembe, Sragen — under the Indonesian Ministry of Education. Taught ICT to Grades 4–6, designing differentiated lesson plans for learners across varied socio-economic and literacy backgrounds in the post-pandemic recovery period.</div>
+            <div class="project-pills">
+              <span class="pill">Differentiated Instruction</span>
+              <span class="pill">Team Leadership</span>
+              <span class="pill">Curriculum Adaptation</span>
+              <span class="pill">ICT Teaching</span>
+            </div>
+          </div>
+          <div class="project-badge">
+            <span class="outcome-tag gov">Ministry Programme</span>
+            <span class="outcome-tag impact">Team Lead</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="reveal">
+        <div class="section-label">Academic Background</div>
+        <h2 class="section-title">Education</h2>
+      </div>
+      <div class="edu-inner">
+
+        <div class="edu-card featured reveal">
+          <span class="edu-flag">LPDP Scholar</span>
+          <div class="edu-degree">Master of Education<br>(Digital Learning)</div>
+          <div class="edu-school">Monash University, Australia</div>
+          <div class="edu-year">Feb 2024 – Dec 2025 · WAM: 76.69</div>
+          <ul class="edu-highlights">
+            <li>LPDP Full Scholarship — Indonesia's national endowment fund for high-achieving students</li>
+            <li>4 × High Distinctions across the programme</li>
+            <li>Key focus: Instructional Design, Digital Data in Education, Ethical Leadership, EdTech Change</li>
+          </ul>
+          <div class="transcript-grid">
+            <div class="transcript-item">
+              <div class="grade">HD · 89</div>
+              <div class="subject">Educational Organisations, Culture & Change</div>
+            </div>
+            <div class="transcript-item">
+              <div class="grade">HD · 85</div>
+              <div class="subject">Leading Educational Technology Change</div>
+            </div>
+            <div class="transcript-item">
+              <div class="grade">HD · 83</div>
+              <div class="subject">Shaping Digital Futures</div>
+            </div>
+            <div class="transcript-item">
+              <div class="grade">HD · 80</div>
+              <div class="subject">Educational Leadership in International Contexts</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="edu-card reveal">
+          <div class="edu-degree">Bachelor of Informatics Engineering Education</div>
+          <div class="edu-school">Universitas Muhammadiyah Surakarta</div>
+          <div class="edu-year">Aug 2018 – Oct 2022</div>
+          <ul class="edu-highlights">
+            <li>PPA (Peningkatan Prestasi Akademik) Scholarship Awardee</li>
+            <li>3 peer-reviewed publications during undergraduate study</li>
+            <li>Registered patent: AR-Manner 1.0</li>
+            <li>1st Place, National 21st Century Learning Innovation Competition (2021)</li>
+            <li>Bangkit Academy (Google, Goto, Traveloka) — Cloud Computing specialisation</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="skills-inner">
+      <div class="reveal">
+        <div class="section-label">Capabilities</div>
+        <h2 class="section-title">Skills &<br>Tools</h2>
+      </div>
+      <div class="skills-grid reveal">
+        <div class="skill-group">
+          <h3>Learning Design</h3>
+          <ul class="skill-list">
+            <li>ADDIE Framework</li>
+            <li>SAM (Successive Approx.)</li>
+            <li>Backward Design</li>
+            <li>Needs Analysis</li>
+            <li>Storyboarding</li>
+            <li>Differentiated Instruction</li>
+            <li>Gamification</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Design Thinking</h3>
+          <ul class="skill-list">
+            <li>Stanford D.school</li>
+            <li>Double Diamond</li>
+            <li>Co-design facilitation</li>
+            <li>Community-based design</li>
+            <li>Offline-First principles</li>
+            <li>Stakeholder engagement</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>EdTech & LMS</h3>
+          <ul class="skill-list">
+            <li>Canvas LMS</li>
+            <li>Google Classroom</li>
+            <li>AR Development</li>
+            <li>Google Workspace Admin</li>
+            <li>Notion · ClickUp</li>
+            <li>Microsoft Office</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Technical</h3>
+          <ul class="skill-list">
+            <li>Python (IT Automation)</li>
+            <li>Google Cloud Platform</li>
+            <li>HTML / CSS / JS</li>
+            <li>GitHub</li>
+            <li>Digital Data in Education</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATIONS -->
+  <section id="publications">
+    <div class="pub-inner">
+      <div class="reveal">
+        <div class="section-label">Research & Recognition</div>
+        <h2 class="section-title" style="color:var(--paper)">Publications,<br>Patents & Awards</h2>
+      </div>
+      <div class="pub-grid reveal">
+        <div class="pub-card">
+          <div class="pub-type">🏅 Patent</div>
+          <div class="pub-title">AR-Manner 1.0 — Augmented Reality Application for Communication Ethics Education in Higher Education</div>
+        </div>
+        <div class="pub-card">
+          <div class="pub-type">📄 Journal Publication</div>
+          <div class="pub-title">Development of AR-Manner 1.0 as a Learning Media for Communication Ethics to Contact Lecturers in Higher Education Using Augmented Reality Technology</div>
+        </div>
+        <div class="pub-card">
+          <div class="pub-type">📄 Journal Publication</div>
+          <div class="pub-title">Implementing STAD Learning Model to Improve Children's Spelling Ability</div>
+        </div>
+        <div class="pub-card">
+          <div class="pub-type">📄 Journal Publication</div>
+          <div class="pub-title">Penyusunan Peta Konsep Mempermudah Belajar Siswa Selama Masa Pandemi Covid-19</div>
+        </div>
+        <div class="pub-card">
+          <div class="pub-type">🏆 National Award</div>
+          <div class="pub-title">1st Place — National 21st Century Learning Innovation Competition (2021)</div>
+        </div>
+        <div class="pub-card">
+          <div class="pub-type">🎓 Scholarship</div>
+          <div class="pub-title">LPDP Full Scholarship Awardee — Indonesia Endowment Fund for Education · Competitive national award for exceptional academic achievers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="reveal">
+        <div class="section-label">Get in Touch</div>
+        <h2 class="section-title">Let's build<br>something<br>meaningful.</h2>
+        <p class="contact-body">
+          I am currently open to roles in learning design, instructional design, L&D, HR-learning, education staff, and related positions across Indonesia. If you're looking for someone who designs with rigour, empathy, and evidence — let's talk.
+        </p>
+        <div class="contact-links">
+          <a href="mailto:rahmatsywldn@gmail.com" class="contact-link">
+            <span class="contact-link-icon">✉</span>
+            <span class="contact-link-text">
+              <span class="contact-link-label">Email</span>
+              <span class="contact-link-val">rahmatsywldn@gmail.com</span>
+            </span>
+          </a>
+          <a href="https://linkedin.com/in/rahmat-syawaludin" target="_blank" class="contact-link">
+            <span class="contact-link-icon">in</span>
+            <span class="contact-link-text">
+              <span class="contact-link-label">LinkedIn</span>
+              <span class="contact-link-val">linkedin.com/in/rahmat-syawaludin</span>
+            </span>
+          </a>
+          <a href="https://sites.google.com/student.monash.edu/action-plan-rahmat-syawaludin" target="_blank" class="contact-link">
+            <span class="contact-link-icon">🌐</span>
+            <span class="contact-link-text">
+              <span class="contact-link-label">Academic Portfolio</span>
+              <span class="contact-link-val">Monash Academic Portfolio</span>
+            </span>
+          </a>
+          <a href="https://pewter-washer-791.notion.site/Community-Based-Offline-Learning-Companion-App" target="_blank" class="contact-link">
+            <span class="contact-link-icon">📎</span>
+            <span class="contact-link-text">
+              <span class="contact-link-label">Design Project</span>
+              <span class="contact-link-val">Notion — Learning Companion App</span>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div class="contact-right reveal">
+        <div class="open-card">
+          <h3>Open to Opportunities</h3>
+          <p>Currently seeking roles across learning design, instructional design, HR-learning, and education. Based in Jakarta — open to hybrid or on-site positions.</p>
+          <div class="open-roles">
+            <span class="open-role">Learning Designer</span>
+            <span class="open-role">Instructional Designer</span>
+            <span class="open-role">L&D Specialist</span>
+            <span class="open-role">Education Staff</span>
+            <span class="open-role">HR Learning</span>
+            <span class="open-role">Curriculum Designer</span>
+            <span class="open-role">Training Designer</span>
+          </div>
+        </div>
+        <div style="padding:2rem; background:var(--cream); border-top:2px solid var(--gold);">
+          <div style="font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">Phone</div>
+          <div style="font-size:1rem; font-weight:500;">+62 858 8223 4015</div>
+          <div style="font-size:0.8rem; color:var(--muted); margin-top:0.3rem;">Jakarta, Indonesia</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 Rahmat Syawaludin · Learning Designer · Jakarta, Indonesia</p>
+    <p>MEd Digital Learning · Monash University · LPDP Scholar</p>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Staggered children reveal
+    document.querySelectorAll('.expertise-grid, .project-list, .pub-grid, .skills-grid').forEach(grid => {
+      const children = grid.children;
+      Array.from(children).forEach((child, i) => {
+        child.classList.add('reveal');
+        child.style.transitionDelay = `${i * 0.08}s`;
+        observer.observe(child);
+      });
+    });
+  </script>
+</body>
+</html>
