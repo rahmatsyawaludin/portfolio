@@ -1086,7 +1086,7 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
-      nav { padding: 1.2rem 2rem; }
+      nav { padding: 0.7rem 1.5rem; }
       .nav-links { display: none; }
       #hero { grid-template-columns: 1fr; }
       .hero-left { padding: 7rem 2rem 3rem; min-height: 70vh; }
@@ -1343,7 +1343,7 @@
   <!-- NAV -->
   <nav>
     <a href="#hero" class="nav-logo">
-      <img src="icon.webp" alt="Logo" style="height: 40px; width: auto;">
+      <img src="icon.webp" alt="Logo" style="height: 32px; width: auto;">
     </a>
 
     <!-- Desktop links — unchanged, hidden on mobile via existing CSS -->
@@ -1371,6 +1371,8 @@
 
   <!-- Full-screen overlay -->
   <div class="nav-overlay" id="navOverlay">
+    <button class="overlay-close" id="overlayClose" aria-label="Close menu">✕</button>
+    <ul>
     <ul>
       <li><a href="#hero"       class="overlay-link">Home ↑</a></li>
       <li><a href="#about"      class="overlay-link">About</a></li>
@@ -2307,7 +2309,7 @@ This case study explores an interactive, game-based learning solution to make pr
     menuBtn.classList.remove('is-open');
     document.body.style.overflow = '';
   }
-
+document.getElementById('overlayClose').addEventListener('click', closeMenu);
   menuBtn.addEventListener('click', () => {
     navOverlay.classList.contains('is-open') ? closeMenu() : openMenu();
   });
