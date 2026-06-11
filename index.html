@@ -595,7 +595,17 @@
       .about-left { position: static; }
       #about { padding: 5rem 1.5rem; }
     }
-
+    
+.about-photo {
+  width: clamp(140px, 20vw, 220px);
+  height: clamp(140px, 20vw, 220px);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border: 4px solid var(--mid-grey);
+  margin-bottom: 1.5rem;
+}
     /* ── EXPERTISE ── */
     #expertise {
       padding: 6rem 3rem;
@@ -1482,6 +1492,7 @@
       <div class="about-left reveal">
         <div class="section-chip chip-indigo">Profile</div>
         <h2 class="section-title">Designing for<br><em style="font-style:italic;color:var(--amber-dark)">real</em><br>learners.</h2>
+        <img src="img_personal" alt="Rahmat Syawaludin" class="about-photo">
         <div class="highlight-bar">
           <div class="hbar">
             <div class="hbar-val">ADDIE · SAM</div>
